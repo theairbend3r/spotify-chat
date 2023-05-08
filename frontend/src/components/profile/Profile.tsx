@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import useDataStore from '@/store/dataStore'
 import IconUser from '../icons/User'
 import Header from '../header/Header'
+import TextBubble from '../chat/TextBubble'
 
 const Profile = () => {
     const username = useDataStore((state) => state.username)
@@ -30,7 +31,7 @@ const Profile = () => {
 
         setChatHistory((chatHistory) => [
             ...chatHistory,
-            { id: crypto.randomUUID(), text: prompt },
+            { id: crypto.randomUUID(), textType: 'prompt', text: prompt },
         ])
 
         try {
@@ -48,39 +49,47 @@ const Profile = () => {
     useEffect(() => {
         setChatHistory((chatHistory) => [
             ...chatHistory,
-            { id: crypto.randomUUID(), text: promptResponse },
+            {
+                id: crypto.randomUUID(),
+                textType: 'promptResponse',
+                text: promptResponse,
+            },
         ])
+        return setPromptResponse('')
     }, [promptResponse])
 
     console.log(chatHistory)
 
     return (
-        <div tw="flex h-full w-full flex-col gap-2 sm:gap-4">
+        <div tw="flex h-full w-full flex-col gap-2 sm:gap-4 p-2">
             <Header />
-            <div tw="flex h-full flex-col gap-4 bg-blue-100 p-4">
-                <div tw="flex flex-row items-center gap-4 bg-green-200">
+            <div tw="flex h-full flex-col gap-4 p-4">
+                <div tw="flex flex-row items-center gap-4 rounded-lg bg-gray-100 mx-4 p-6">
                     <IconUser tw="w-12 rounded-full bg-gray-100 p-2" />
                     <h2>Hello {username}!</h2>
                 </div>
-                <ul tw="h-full w-full overflow-scroll bg-orange-200">
+                <ul tw="flex h-2/3 w-full flex-col gap-4 overflow-scroll p-4">
                     {chatHistory.map((item) => (
-                        <li key={item.id}> {item.text} </li>
+                        <TextBubble
+                            key={item.id}
+                            textType={item.textType}
+                            text={item.text}
+                        />
                     ))}
                 </ul>
-                <form
-                    tw="flex w-full flex-row bg-red-200"
-                    onSubmit={submitPrompt}
-                >
+                <form tw="flex w-full flex-row gap-4" onSubmit={submitPrompt}>
                     <label tw="w-full">
                         <input
-                            tw="w-full p-2"
+                            tw="w-full rounded-lg p-2"
                             name="prompt-input"
                             placeholder="enter prompt"
                             value={prompt}
                             onChange={(e) => setPrompt(e.target.value)}
                         />
                     </label>
-                    <button tw="w-auto px-4 py-2 text-center"> submit </button>
+                    <button tw="w-auto rounded-lg bg-blue-500 px-4 py-2 text-center text-gray-100">
+                        submit
+                    </button>
                 </form>
             </div>
         </div>

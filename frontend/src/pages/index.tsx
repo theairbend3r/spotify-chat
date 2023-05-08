@@ -36,7 +36,7 @@ export default function Home() {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main tw="flex h-screen w-full flex-col items-center bg-gray-100 text-gray-900">
+            <main tw="flex h-screen w-full flex-col items-center bg-gray-200 text-gray-900">
                 {isLoggedIn ? <Profile /> : <Login />}
             </main>
         </>
