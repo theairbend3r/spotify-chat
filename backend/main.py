@@ -1,13 +1,13 @@
 import uuid
 from functools import lru_cache
+from collections import defaultdict
 
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
 
 from pydantic import BaseModel
-from typing_extensions import Annotated
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -46,21 +46,22 @@ AUTH_MANAGER = SpotifyOAuth(
     client_id=settings.client_id,
     client_secret=settings.client_secret,
     redirect_uri=settings.redirect_uri,
-    scope=["user-read-email"],
+    scope=[
+        "user-read-email",
+        "user-top-read",
+        "user-follow-read",
+        "playlist-read-private",
+        "playlist-read-collaborative",
+        "user-read-currently-playing",
+    ],
     state=OAUTH_STATE,
 )
+
+DATA_FETCHED = defaultdict()
 
 
 @app.get("/api/login")
 async def login():
-    # auth_manager = SpotifyOAuth(
-    #     client_id=settings.client_id,
-    #     client_secret=settings.client_secret,
-    #     redirect_uri=settings.redirect_uri,
-    #     scope=["user-read-email"],
-    #     state=OAUTH_STATE,
-    # )
-
     auth_url = AUTH_MANAGER.get_authorize_url()
 
     return RedirectResponse(url=auth_url)
@@ -83,10 +84,6 @@ async def auth(request: Request):
         sp = spotipy.Spotify(auth_manager=AUTH_MANAGER)
         username = sp.me()["display_name"]
 
-        # try response cookies: https://fastapi.tiangolo.com/advanced/response-cookies/
-        # return RedirectResponse(
-        #     url=f"http://localhost:3000?access_token={ACCESS_TOKEN}&refresh_token={REFRESH_TOKEN}"
-        # )
         return RedirectResponse(url=f"http://localhost:3000?user_name={username}")
 
 
@@ -96,11 +93,30 @@ async def current_user():
     return sp.current_user()
 
 
+@app.get("/api/fetch_all")
+async def fetch_all():
+    global DATA_FETCHED
+    sp = spotipy.Spotify(auth=ACCESS_TOKEN, auth_manager=AUTH_MANAGER)
+    current_user_followed_artists = sp.current_user_followed_artists()
+    current_user_playlists = sp.current_user_playlists()
+
+    DATA_FETCHED["current_user_playlists"] = current_user_playlists
+    DATA_FETCHED["current_user_followed_artists"] = current_user_followed_artists
+
+    return {"data": "data fetched"}
+
+
 class Prompt(BaseModel):
     prompt: str
 
 
 @app.post("/api/prompt")
 async def prompt(prompt: Prompt):
-    print(prompt.prompt)
-    return "lmao"
+    prompt = prompt.prompt.lower()
+    print(prompt)
+    if prompt == "how many playlists do i have?":
+        return {"data": len(DATA_FETCHED["current_user_playlists"])}
+    else:
+        return {
+            "data": "I am sorry, I don't know the answer to that. I am still learning. :("
+        }

@@ -1,6 +1,6 @@
 import 'twin.macro'
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useDataStore from '@/store/dataStore'
 import IconUser from '../icons/User'
 import Header from '../header/Header'
@@ -8,6 +8,17 @@ import Header from '../header/Header'
 const Profile = () => {
     const username = useDataStore((state) => state.username)
     const [prompt, setPrompt] = useState<string>('')
+    const [promptResponse, setPromptResponse] = useState<string>('')
+
+    // fetch all data required after logging in.
+    const fetchData = async () => {
+        const response = await axios.get('http://localhost:8000/api/fetch_all')
+        console.log(response.data.data)
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [])
 
     const submitQuery = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -20,13 +31,12 @@ const Profile = () => {
                 'http://localhost:8000/api/prompt',
                 data
             )
+            setPromptResponse(response.data.data)
             console.log(response)
         } catch (error) {
             console.log(error.response.data.detail)
         }
     }
-
-    console.log(prompt)
 
     return (
         <div tw="flex h-full w-full flex-col gap-2 sm:gap-4">
@@ -36,7 +46,9 @@ const Profile = () => {
                     <IconUser tw="w-12 rounded-full bg-gray-100 p-2" />
                     <h2>Hello {username}!</h2>
                 </div>
-                <div tw="h-full w-full bg-orange-200">lmao</div>
+                <div tw="h-full w-full bg-orange-200">
+                    <p>{promptResponse}</p>
+                </div>
                 <form
                     tw="flex w-full flex-row bg-red-200"
                     onSubmit={submitQuery}
