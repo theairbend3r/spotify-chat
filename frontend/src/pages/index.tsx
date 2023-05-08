@@ -25,7 +25,7 @@ export default function Home() {
     return (
         <>
             <Head>
-                <title>melotea</title>
+                <title>spotify-chat</title>
                 <meta
                     name="description"
                     content="Analyse your spotify music."
