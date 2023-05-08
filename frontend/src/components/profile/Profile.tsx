@@ -1,16 +1,33 @@
 import 'twin.macro'
-import React from 'react'
+import axios from 'axios'
+import React, { useState } from 'react'
 import useDataStore from '@/store/dataStore'
 import IconUser from '../icons/User'
 import Header from '../header/Header'
 
-const submitQuery = (e: React.FormEvent) => {
-    e.preventDefault()
-    axios.post("https://login")
-}
-
 const Profile = () => {
     const username = useDataStore((state) => state.username)
+    const [prompt, setPrompt] = useState<string>('')
+
+    const submitQuery = async (e: React.FormEvent) => {
+        e.preventDefault()
+        const data = {
+            prompt: prompt,
+        }
+
+        try {
+            const response = await axios.post(
+                'http://localhost:8000/api/prompt',
+                data
+            )
+            console.log(response)
+        } catch (error) {
+            console.log(error.response.data.detail)
+        }
+    }
+
+    console.log(prompt)
+
     return (
         <div tw="flex h-full w-full flex-col gap-2 sm:gap-4">
             <Header />
@@ -29,6 +46,8 @@ const Profile = () => {
                             tw="w-full p-2"
                             name="prompt-input"
                             placeholder="enter prompt"
+                            value={prompt}
+                            onChange={(e) => setPrompt(e.target.value)}
                         />
                     </label>
                     <button tw="w-auto px-4 py-2 text-center"> submit </button>

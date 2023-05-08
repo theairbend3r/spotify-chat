@@ -4,14 +4,31 @@ from functools import lru_cache
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
+
+from pydantic import BaseModel
 from typing_extensions import Annotated
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 import config
 
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:8000",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 OAUTH_STATE = "".join(str(uuid.uuid4()).split("-"))
 ACCESS_TOKEN = None
@@ -20,7 +37,6 @@ REFRESH_TOKEN = None
 
 @lru_cache
 def get_settings():
-    print(config.Settings())
     return config.Settings()
 
 
@@ -78,3 +94,13 @@ async def auth(request: Request):
 async def current_user():
     sp = spotipy.Spotify(auth=ACCESS_TOKEN, auth_manager=AUTH_MANAGER)
     return sp.current_user()
+
+
+class Prompt(BaseModel):
+    prompt: str
+
+
+@app.post("/api/prompt")
+async def prompt(prompt: Prompt):
+    print(prompt.prompt)
+    return "lmao"
