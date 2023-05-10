@@ -1,5 +1,7 @@
 # Spotify Chat
 
+Deployed app: https://clever-lolly-efc6ae.netlify.app/
+
 ## Installation
 
 ### Backend
