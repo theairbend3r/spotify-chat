@@ -6,9 +6,17 @@ import IconUser from '../icons/User'
 import Header from '../header/Header'
 import TextBubble from '../chat/TextBubble'
 
+interface ChatHistoryItemInterface {
+    id: string
+    textType: string
+    text: string
+}
+
+interface ChatHistoryInterface extends Array<ChatHistoryItemInterface> { }
+
 const Profile = () => {
     const username = useDataStore((state) => state.username)
-    const [chatHistory, setChatHistory] = useState<any>([
+    const [chatHistory, setChatHistory] = useState<ChatHistoryInterface>([
         {
             id: crypto.randomUUID(),
             textType: 'promptResponse',
@@ -34,7 +42,7 @@ const Profile = () => {
             prompt: prompt,
         }
 
-        setChatHistory((chatHistory: []) => [
+        setChatHistory((chatHistory: ChatHistoryInterface) => [
             ...chatHistory,
             { id: crypto.randomUUID(), textType: 'prompt', text: prompt },
         ])
@@ -44,7 +52,7 @@ const Profile = () => {
                 'http://localhost:8000/api/prompt',
                 data
             )
-            setChatHistory((chatHistory: []) => [
+            setChatHistory((chatHistory: ChatHistoryInterface) => [
                 ...chatHistory,
                 {
                     id: crypto.randomUUID(),
