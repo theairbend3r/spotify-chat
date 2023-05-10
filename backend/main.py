@@ -12,7 +12,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 import config
-
+from prompt_resolver import PromptResolver
 
 app = FastAPI()
 
@@ -41,6 +41,7 @@ def get_settings():
 
 
 settings = get_settings()
+prompt_resolver = PromptResolver()
 
 AUTH_MANAGER = SpotifyOAuth(
     client_id=settings.client_id,
