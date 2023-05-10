@@ -1,11 +1,4 @@
 class PromptResolver:
-    """Prompt resolver.
-
-    Attributes
-    ----------
-    prompt :
-    """
-
     def __init__(self):
         self.phrase_to_intent = {
             "count": ["how many", "number of", "count"],
