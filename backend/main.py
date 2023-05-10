@@ -57,6 +57,7 @@ AUTH_MANAGER = SpotifyOAuth(
     state=OAUTH_STATE,
 )
 
+# cache responses in memory for faster req-response cycle
 DATA_FETCHED = defaultdict()
 
 
@@ -113,9 +114,10 @@ class Prompt(BaseModel):
 @app.post("/api/prompt")
 async def prompt(prompt: Prompt):
     prompt = prompt.prompt.lower()
-    print(prompt)
     if prompt == "how many playlists do i have?":
         return {"data": len(DATA_FETCHED["current_user_playlists"])}
+    elif prompt == "how many artists do i follow?":
+        return {"data": len(DATA_FETCHED["current_user_followed_artists"])}
     else:
         return {
             "data": "I am sorry, I don't know the answer to that. I am still learning. :("
