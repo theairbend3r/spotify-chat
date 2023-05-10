@@ -40,35 +40,28 @@ const Profile = () => {
                 data
             )
             setPromptResponse(response.data.data)
+            setChatHistory((chatHistory) => [
+                ...chatHistory,
+                {
+                    id: crypto.randomUUID(),
+                    textType: 'promptResponse',
+                    text: response.data.data,
+                },
+            ])
         } catch (error) {
             console.log(error.response.data.detail)
         }
     }
 
-    // add prompt response to chat history
-    useEffect(() => {
-        setChatHistory((chatHistory) => [
-            ...chatHistory,
-            {
-                id: crypto.randomUUID(),
-                textType: 'promptResponse',
-                text: promptResponse,
-            },
-        ])
-        return setPromptResponse('')
-    }, [promptResponse])
-
-    console.log(chatHistory)
-
     return (
-        <div tw="flex h-full w-full flex-col gap-2 sm:gap-4 p-2">
+        <div tw="flex h-screen w-full flex-col gap-2 p-2 sm:gap-4">
             <Header />
             <div tw="flex h-full flex-col gap-4 p-4">
-                <div tw="flex flex-row items-center gap-4 rounded-lg bg-gray-100 mx-4 p-6">
+                <div tw="mx-4 flex flex-row items-center gap-4 rounded-lg bg-gray-100 p-6">
                     <IconUser tw="w-12 rounded-full bg-gray-100 p-2" />
                     <h2>Hello {username}!</h2>
                 </div>
-                <ul tw="flex h-2/3 w-full flex-col gap-4 overflow-scroll p-4">
+                <ul tw="flex h-full w-full flex-col gap-4 overflow-scroll p-4">
                     {chatHistory.map((item) => (
                         <TextBubble
                             key={item.id}
