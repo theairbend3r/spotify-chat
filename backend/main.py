@@ -20,7 +20,7 @@ origins = [
     # "http://localhost:8000",
     # "http://localhost:3000",
     "https://spotify-chat.onrender.com:80",
-    "http://localhost:3000",
+    "https://clever-lolly-efc6ae.netlify.app",
 ]
 
 app.add_middleware(
@@ -79,7 +79,8 @@ async def auth(request: Request):
     state = request.query_params["state"]
 
     if state != OAUTH_STATE:
-        return RedirectResponse(url="http://localhost:3000")
+        # return RedirectResponse(url="http://localhost:3000")
+        return RedirectResponse(url="https://clever-lolly-efc6ae.netlify.app")
     else:
         auth_response = AUTH_MANAGER.get_access_token(code=code, as_dict=True)
         ACCESS_TOKEN = auth_response["access_token"]
@@ -88,7 +89,8 @@ async def auth(request: Request):
         sp = spotipy.Spotify(auth_manager=AUTH_MANAGER)
         username = sp.me()["display_name"]
 
-        return RedirectResponse(url=f"http://localhost:3000?user_name={username}")
+        # return RedirectResponse(url=f"http://localhost:3000?user_name={username}")
+        return RedirectResponse(url=f"https://clever-lolly-efc6ae.netlify.app?user_name={username}")
 
 
 @app.get("/api/current_user")
