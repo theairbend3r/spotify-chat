@@ -17,7 +17,9 @@ from prompt_resolver import PromptResolver
 app = FastAPI()
 
 origins = [
-    "http://localhost:8000",
+    # "http://localhost:8000",
+    # "http://localhost:3000",
+    "https://spotify-chat.onrender.com:80",
     "http://localhost:3000",
 ]
 
@@ -34,8 +36,8 @@ OAUTH_STATE = "".join(str(uuid.uuid4()).split("-"))
 ACCESS_TOKEN = None
 REFRESH_TOKEN = None
 
-
-@lru_cache
+# for python 3.7
+@lru_cache()
 def get_settings():
     return config.Settings()
 

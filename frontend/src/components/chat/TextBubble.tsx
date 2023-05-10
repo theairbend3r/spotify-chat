@@ -1,7 +1,7 @@
 import 'twin.macro'
 import React from 'react'
 
-function isObject(obj) {
+function isObject(obj: any) {
     return obj != null && obj.constructor.name === 'Object'
 }
 
@@ -9,7 +9,7 @@ const TextBubble = ({
     textType,
     text,
 }: {
-    text: string | Array
+    text: string | any
     textType: string
 }) => {
     return (
@@ -23,7 +23,7 @@ const TextBubble = ({
                 <li tw="w-1/2 self-start rounded-lg bg-gray-100 p-4">
                     <p tw="text-sm text-gray-500">AI</p>
                     {isObject(text) ? (
-                        text['items'].map((item, idx) => (
+                        text['items'].map((item: any, idx: any) => (
                             <p key={item.name}>
                                 {idx + 1}: {item.name}
                             </p>

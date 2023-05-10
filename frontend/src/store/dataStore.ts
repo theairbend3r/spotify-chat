@@ -10,7 +10,7 @@ interface DataState {
 const useDataStore = create<DataState>()(
     devtools((set) => ({
         username: '',
-        storeUsername: (username: string) => {
+        storeUsername: (username: any) => {
             set({
                 username: username,
             })

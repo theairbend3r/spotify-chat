@@ -27,7 +27,10 @@ const Profile = () => {
 
     // fetch all data required after logging in.
     const fetchData = async () => {
-        const response = await axios.get('http://localhost:8000/api/fetch_all')
+        // const response = await axios.get('http://localhost:8000/api/fetch_all')
+        const response = await axios.get(
+            'https://spotify-chat.onrender.com:80/api/fetch_all'
+        )
         console.log(response.data.data)
     }
 
@@ -49,7 +52,8 @@ const Profile = () => {
 
         try {
             const response = await axios.post(
-                'http://localhost:8000/api/prompt',
+                // 'http://localhost:8000/api/prompt',
+                'https://spotify-chat.onrender.com:80/api/prompt',
                 data
             )
             setChatHistory((chatHistory: ChatHistoryInterface) => [

@@ -7,7 +7,8 @@ const Login = () => {
             <h1 tw="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl">
                 spotify-chat
             </h1>
-            <a href="http://localhost:8000/api/login">
+            {/* <a href="http://localhost:8000/api/login"> */}
+            <a href="https://spotify-chat.onrender.com:80/api/login">
                 <button tw="rounded rounded-lg border border-gray-900 p-2 hover:(bg-green-600 text-gray-100)">
                     login with spotify
                 </button>
