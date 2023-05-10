@@ -114,6 +114,7 @@ class Prompt(BaseModel):
 
 @app.post("/api/prompt")
 async def prompt(prompt: Prompt):
+    # print(DATA_FETCHED)
     pr = PromptResolver()
     resolved_intent_subject = pr.resolve_prompt(prompt.prompt)
 

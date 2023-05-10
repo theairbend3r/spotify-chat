@@ -5,7 +5,6 @@ const Home = () => {
     const searchParams = useSearchParams()
     const search = searchParams.get('access_token')
 
-    console.log(search)
     return (
         <div>
             <p> home page</p>

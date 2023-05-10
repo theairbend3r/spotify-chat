@@ -1,6 +1,3 @@
-from collections import defaultdict
-
-
 class PromptResolver:
     """Prompt resolver.
 
@@ -10,8 +7,6 @@ class PromptResolver:
     """
 
     def __init__(self):
-        self.intent_phrases = ["how many", "number of", "count"]
-        self.subject_phrases = ["what", "which"]
         self.phrase_to_intent = {
             "count": ["how many", "number of", "count"],
             "description": ["what", "which"],
