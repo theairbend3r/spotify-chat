@@ -12,7 +12,7 @@ interface ChatHistoryItemInterface {
     text: string
 }
 
-interface ChatHistoryInterface extends Array<ChatHistoryItemInterface> { }
+interface ChatHistoryInterface extends Array<ChatHistoryItemInterface> {}
 
 const Profile = () => {
     const username = useDataStore((state) => state.username)
@@ -29,7 +29,7 @@ const Profile = () => {
     const fetchData = async () => {
         // const response = await axios.get('http://localhost:8000/api/fetch_all')
         const response = await axios.get(
-            'https://spotify-chat.onrender.com:80/api/fetch_all'
+            'https://spotify-chat.onrender.com/api/fetch_all'
         )
         console.log(response.data.data)
     }
@@ -53,7 +53,7 @@ const Profile = () => {
         try {
             const response = await axios.post(
                 // 'http://localhost:8000/api/prompt',
-                'https://spotify-chat.onrender.com:80/api/prompt',
+                'https://spotify-chat.onrender.com/api/prompt',
                 data
             )
             setChatHistory((chatHistory: ChatHistoryInterface) => [
