@@ -37,7 +37,7 @@ ACCESS_TOKEN = None
 REFRESH_TOKEN = None
 
 # for python 3.7
-@lru_cache()
+@lru_cache(maxsize=128)
 def get_settings():
     return config.Settings()
 
