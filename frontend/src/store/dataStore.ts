@@ -3,7 +3,7 @@ import { devtools } from 'zustand/middleware'
 
 interface DataState {
     username: string
-    storeUsername: (username: string) => void
+    storeUsername: (username: any) => void
     removeUsername: () => void
 }
 
