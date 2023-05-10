@@ -105,7 +105,7 @@ async def fetch_all():
     DATA_FETCHED["current_user_playlists"] = current_user_playlists
     DATA_FETCHED["current_user_followed_artists"] = current_user_followed_artists
 
-    return {"data": "data fetched"}
+    return {"data": "data is fetched, huzzah!"}
 
 
 class Prompt(BaseModel):
@@ -114,12 +114,20 @@ class Prompt(BaseModel):
 
 @app.post("/api/prompt")
 async def prompt(prompt: Prompt):
-    prompt = prompt.prompt.lower()
-    if prompt == "how many playlists do i have?":
-        return {"data": len(DATA_FETCHED["current_user_playlists"])}
-    elif prompt == "how many artists do i follow?":
-        return {"data": len(DATA_FETCHED["current_user_followed_artists"])}
+    pr = PromptResolver()
+    resolved_intent_subject = pr.resolve_prompt(prompt.prompt)
+
+    if resolved_intent_subject:
+        action = pr.action_on_prompt(resolved_intent_subject)
+        if resolved_intent_subject[1] == "description":
+            return {"data": DATA_FETCHED[action]}
+        elif resolved_intent_subject[1] == "count":
+            return {"data": len(DATA_FETCHED[action])}
+        else:
+            return {
+                "data": "I am sorry, I don't know the answer to that...yet. I am still learning. :)"
+            }
     else:
         return {
-            "data": "I am sorry, I don't know the answer to that. I am still learning. :("
+            "data": "I am sorry, I don't know the answer to that...yet. I am still learning. :)"
         }

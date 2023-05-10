@@ -10,20 +10,25 @@ class PromptResolver:
     """
 
     def __init__(self):
-        self.intents = ["count", "description"]
-        self.subjects = ["artists", "playlists"]
+        self.intent_phrases = ["how many", "number of", "count"]
+        self.subject_phrases = ["what", "which"]
         self.phrase_to_intent = {
             "count": ["how many", "number of", "count"],
             "description": ["what", "which"],
         }
+        self.phrase_to_subject = {
+            "playlist": ["playlists", "playlist"],
+            "artist": ["artists", "artist"],
+        }
         self.subject_intent_to_action = [
-            (
-                "playlists",
-                "count",
-            )
+            ("playlist", "description", "current_user_playlists"),
+            ("artist", "description", "current_user_followed_artists"),
+            ("playlist", "count", "current_user_playlists"),
+            ("artist", "count", "current_user_followed_artists"),
         ]
 
     def _tokenise_prompt(self, prompt):
+        print("tokenisation: ", prompt.lower().split(" "))
         return prompt.lower().split(" ")
 
     def resolve_prompt(self, prompt: str):
@@ -31,23 +36,32 @@ class PromptResolver:
         # prompts are short
         # prompts contain just a single intent and subject
 
-        # key: value
-        # subject: intent
-        resolved_intent_subject = defaultdict()
+        resolved_subject_intent = []
 
         subject = None
         intent = None
         for token in self._tokenise_prompt(prompt):
-            if token in self.subjects:
-                subject = token
-            if token in self.intents:
-                intent = token
+            for s, p in self.phrase_to_subject.items():
+                if token in p:
+                    subject = s
+            for i, p in self.phrase_to_intent.items():
+                if token in p:
+                    intent = i
 
+        # print(subject, intent)
         if subject is not None and intent is not None:
-            resolved_intent_subject[subject] = intent
-            return resolved_intent_subject
+            resolved_subject_intent.append(subject)
+            resolved_subject_intent.append(intent)
+            return resolved_subject_intent
         else:
-            return "I am sorry, I don't know the answer to that...yet. I am still learning. :)"
+            return False
 
-    def action_on_prompt(self, prompt):
-        resolved_intent_subject = self.resolve_prompt(prompt)
+    def action_on_prompt(self, resolved_intent_subject):
+        for sia in self.subject_intent_to_action:
+            if (
+                sia[0] == resolved_intent_subject[0]
+                and sia[1] == resolved_intent_subject[1]
+            ):
+                return sia[2]
+
+        return False
